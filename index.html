@@ -2,430 +2,687 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Mazda 626">
-<title>Mazda 626 GD · Журнал</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Oswald:wght@400;500&display=swap" rel="stylesheet">
+<meta name="apple-mobile-web-app-title" content="Mazda 626 GD">
+<title>Mazda 626 GD · Бортовий журнал</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+*{box-sizing:border-box}
 :root{
-  --r-red:#C0392B;--r-red-d:#8B1A1A;--r-amber:#D4860A;--r-amber-l:#F5C842;
-  --r-dark:#1A1208;--r-panel:#231A0D;--r-mid:#3A2A12;
-  --r-cream:#F0E8D0;--r-tan:#C8A96E;--r-tan-d:#8B6914;
-  --r-green:#2ECC71;--r-green-d:#1A7A42;
-  --mono:'Share Tech Mono',monospace;--head:'Oswald',sans-serif;
+  --ink:#1f211d;--muted:#737065;--line:#ded8c7;--paper:#f7f2e8;--card:#fffaf0;
+  --green:#22735a;--teal:#1b6772;--amber:#d98c20;--red:#b93f34;--blue:#365f8f;
+  --dark:#1c1711;--soft:#f1ead9;--cream:#fff4d7;--mono:"Share Tech Mono",monospace;--sans:Inter,system-ui,sans-serif;
 }
-html,body{height:100%;background:#1A1208;overflow:hidden;}
-.app{display:flex;flex-direction:column;height:100vh;height:100dvh;background:#1A1208;font-family:var(--mono);color:var(--r-cream);}
-
-.header{background:#231A0D;border-bottom:2px solid var(--r-amber);padding:10px 16px 8px;flex-shrink:0;}
-.header-top{display:flex;align-items:center;gap:10px;margin-bottom:3px;}
-.logo-box{background:var(--r-red);color:#fff;font-family:var(--head);font-size:10px;font-weight:500;padding:3px 8px;letter-spacing:2px;}
-.model-name{font-family:var(--head);font-size:20px;font-weight:500;color:var(--r-amber-l);letter-spacing:3px;}
-.header-sub{font-size:10px;color:var(--r-tan);letter-spacing:2px;}
-.odo-strip{background:var(--r-dark);border-top:1px solid var(--r-mid);border-bottom:1px solid var(--r-mid);padding:5px 16px;font-size:12px;color:var(--r-green);letter-spacing:3px;text-align:center;flex-shrink:0;}
-
-.tabs{display:flex;background:#231A0D;border-bottom:2px solid var(--r-mid);flex-shrink:0;}
-.tab{flex:1;padding:8px 4px 6px;font-size:10px;font-family:var(--head);font-weight:400;letter-spacing:1px;text-align:center;color:var(--r-tan);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;}
-.tab i{display:block;font-size:17px;margin-bottom:2px;}
-.tab.active{color:var(--r-amber-l);border-bottom-color:var(--r-amber-l);}
-
-.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-
-.section{display:none;padding:14px 14px 80px;}
-.section.active{display:block;}
-
-.gauge-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px;}
-.gauge{background:var(--r-panel);border:1px solid var(--r-mid);padding:10px 12px;}
-.gauge-label{font-size:9px;color:var(--r-tan);letter-spacing:2px;margin-bottom:3px;font-family:var(--head);}
-.gauge-val{font-size:20px;color:var(--r-amber-l);font-family:var(--mono);}
-.gauge-unit{font-size:10px;color:var(--r-tan);margin-top:1px;}
-.gauge-accent{border-left:3px solid var(--r-red);}
-.gauge-green{border-left:3px solid var(--r-green);}
-
-.panel{background:var(--r-panel);border:1px solid var(--r-mid);padding:12px 14px;margin-bottom:10px;}
-.panel-title{font-family:var(--head);font-size:12px;letter-spacing:2px;color:var(--r-amber);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--r-mid);display:flex;align-items:center;gap:7px;}
-.panel-title i{font-size:15px;}
-
-.entry-row{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--r-mid);}
-.entry-row:last-child{border-bottom:none;}
-.entry-dot{width:8px;height:8px;flex-shrink:0;}
-.entry-info{flex:1;min-width:0;}
-.entry-name{font-size:12px;color:var(--r-cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.entry-meta{font-size:10px;color:var(--r-tan);}
-.entry-amt{font-size:13px;color:var(--r-amber-l);text-align:right;white-space:nowrap;}
-.entry-del{font-size:15px;color:var(--r-tan-d);cursor:pointer;padding:6px 4px;background:none;border:none;flex-shrink:0;}
-
-.form-row{margin-bottom:9px;}
-.form-row label{display:block;font-size:10px;color:var(--r-tan);letter-spacing:1px;margin-bottom:4px;font-family:var(--head);}
-.form-row input,.form-row select{width:100%;padding:9px 10px;font-size:14px;background:var(--r-dark);color:var(--r-cream);border:1px solid var(--r-mid);font-family:var(--mono);border-radius:0;-webkit-appearance:none;appearance:none;}
-.form-row input:focus,.form-row select:focus{outline:none;border-color:var(--r-amber);}
-.form-row select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23C8A96E' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;}
-.form-row select option{background:#231A0D;}
-.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-
-.btn-retro{width:100%;padding:11px;font-family:var(--head);font-size:13px;letter-spacing:3px;cursor:pointer;margin-top:6px;border-radius:0;}
-.btn-save{background:var(--r-red);color:#fff;border:none;}
-.btn-save:active{background:var(--r-red-d);}
-
-.filter-strip{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
-.filter-strip::-webkit-scrollbar{display:none;}
-.fbtn{flex-shrink:0;padding:5px 12px;font-size:10px;font-family:var(--head);letter-spacing:1px;cursor:pointer;border:1px solid var(--r-mid);background:transparent;color:var(--r-tan);border-radius:0;}
-.fbtn.active{background:var(--r-amber);color:var(--r-dark);border-color:var(--r-amber);}
-
-.bar-wrap{margin-bottom:7px;}
-.bar-label{display:flex;justify-content:space-between;font-size:10px;color:var(--r-tan);margin-bottom:3px;}
-.bar-track{height:5px;background:var(--r-mid);}
-.bar-fill{height:100%;}
-
-.toast-r{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--r-amber);color:var(--r-dark);padding:7px 18px;font-family:var(--head);font-size:12px;letter-spacing:2px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:99;white-space:nowrap;}
-.toast-r.show{opacity:1;}
-
-.empty-r{text-align:center;padding:28px 0;color:var(--r-tan);font-size:12px;}
-.empty-r i{font-size:32px;display:block;margin-bottom:8px;color:var(--r-mid);}
-
-.anal-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--r-mid);}
-.anal-row:last-child{border-bottom:none;}
-.anal-key{font-size:11px;color:var(--r-tan);}
-.anal-val{font-size:13px;color:var(--r-amber-l);}
-.scanline{font-size:10px;color:var(--r-green);letter-spacing:1px;padding:4px 0;border-top:1px solid var(--r-mid);margin-top:8px;}
+body{margin:0;background:linear-gradient(180deg,#f8f1df 0%,#efe5d0 52%,#e7dcc6 100%);color:var(--ink);font-family:var(--sans);min-height:100vh}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.app{min-height:100vh;display:flex;flex-direction:column}
+.hero{position:relative;color:#fff;isolation:isolate;background:#1c1711;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(28,23,17,.96),rgba(28,23,17,.64),rgba(28,23,17,.2)),url("https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/1988_Mazda_626_%28GD%29_2.2i_sedan_%2819632306251%29.jpg/1280px-1988_Mazda_626_%28GD%29_2.2i_sedan_%2819632306251%29.jpg") center/cover;z-index:-2}
+.hero::after{content:"";position:absolute;inset:auto 0 0;height:58px;background:linear-gradient(180deg,transparent,#f8f1df);z-index:-1}
+.hero-inner{width:min(1180px,100%);margin:0 auto;padding:24px 18px 58px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:28px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px}
+.brand-mark{width:34px;height:34px;border:2px solid rgba(255,255,255,.72);display:grid;place-items:center;border-radius:50%;font-family:var(--mono);font-size:12px;color:#ffd28a}
+.brand small{display:block;color:rgba(255,255,255,.62);font-weight:700;font-size:11px;margin-top:1px}
+.status-pill{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border-radius:999px;font-size:13px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(300px,.95fr);gap:24px;align-items:end}
+.hero h1{font-size:clamp(34px,5vw,64px);line-height:1;margin:0 0 14px;font-weight:800;letter-spacing:0}
+.hero p{max-width:660px;margin:0;color:rgba(255,255,255,.82);font-size:16px;line-height:1.6}
+.quick-card{background:rgba(255,244,215,.14);border:1px solid rgba(255,244,215,.24);backdrop-filter:blur(16px);padding:16px;border-radius:8px}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.quick-stat{padding:12px;border-radius:7px;background:rgba(255,255,255,.12)}
+.quick-label{font-size:12px;color:rgba(255,255,255,.68)}
+.quick-val{font-family:var(--mono);font-size:25px;margin-top:4px}
+.photo-credit{position:absolute;right:14px;bottom:12px;color:rgba(255,255,255,.48);font-size:11px}
+.photo-credit a{color:rgba(255,255,255,.72);text-decoration:none}
+.tabs{position:sticky;top:0;z-index:20;background:rgba(248,241,223,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.tabs-inner{width:min(1180px,100%);margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px 14px}
+.tab{border:0;background:transparent;color:var(--muted);border-radius:8px;padding:10px 8px;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:14px}
+.tab i{font-size:20px}
+.tab.active{background:var(--dark);color:#fff;box-shadow:0 10px 24px rgba(14,25,23,.18)}
+.main{width:min(1180px,100%);margin:-34px auto 0;padding:0 14px 36px;position:relative;z-index:5}
+.section{display:none}
+.section.active{display:block}
+.dashboard{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.card,.metric,.panel{background:var(--card);border:1px solid rgba(220,229,223,.9);border-radius:8px;box-shadow:0 14px 34px rgba(31,52,46,.08)}
+.metric{padding:14px;min-height:106px;position:relative;overflow:hidden}
+.metric::after{content:"";position:absolute;right:-22px;bottom:-24px;width:86px;height:86px;border-radius:50%;background:var(--soft)}
+.metric .icon{position:relative;z-index:1;width:34px;height:34px;border-radius:8px;display:grid;place-items:center;background:#f2ead6;color:var(--green);font-size:20px;margin-bottom:12px}
+.metric-label{position:relative;z-index:1;color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase}
+.metric-val{position:relative;z-index:1;font-family:var(--mono);font-size:28px;line-height:1.1;margin-top:4px}
+.metric-unit{position:relative;z-index:1;color:var(--muted);font-size:12px;margin-top:3px}
+.panel{padding:16px;margin-bottom:14px}
+.garage-card{background:linear-gradient(135deg,#221a10,#49331a);color:#fff;border:1px solid rgba(255,210,138,.32);border-radius:8px;padding:16px;margin-bottom:14px;box-shadow:0 16px 38px rgba(38,27,14,.18)}
+.garage-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.garage-title{font-size:23px;font-weight:800;line-height:1}
+.garage-sub{color:rgba(255,255,255,.68);font-size:13px;margin-top:4px}
+.garage-badge{font-family:var(--mono);border:1px solid rgba(255,210,138,.5);color:#ffd28a;padding:8px 10px;border-radius:7px;white-space:nowrap}
+.garage-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.garage-spec{background:rgba(255,255,255,.08);border-radius:7px;padding:10px}
+.garage-spec span{display:block;color:rgba(255,255,255,.62);font-size:11px;text-transform:uppercase;font-weight:800}
+.garage-spec strong{display:block;margin-top:4px;font-family:var(--mono);font-size:18px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}
+.panel-title{display:flex;align-items:center;gap:9px;font-weight:800}
+.panel-title i{font-size:21px;color:var(--green)}
+.hint{color:var(--muted);font-size:13px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.field label{font-size:12px;color:var(--muted);font-weight:800;text-transform:uppercase}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:#fbfdfb;color:var(--ink);border-radius:8px;padding:11px 12px;outline:0}
+.field textarea{resize:vertical;min-height:76px}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(22,135,90,.12)}
+.fuel-types{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.chip{border:1px solid var(--line);background:#fbfdfb;border-radius:8px;padding:10px 8px;text-align:center;font-weight:800;color:var(--muted)}
+.chip.active{background:#e9f8f0;border-color:#9bd8bb;color:var(--green)}
+.type-toggle{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.type-btn{border:1px solid var(--line);background:#fbfdfb;border-radius:8px;padding:11px 8px;font-weight:800;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px}
+.type-btn.active{background:var(--dark);color:#fff;border-color:var(--dark)}
+.btn{border:0;border-radius:8px;padding:12px 14px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary{width:100%;background:var(--green);color:#fff}
+.btn-secondary{background:#edf5f1;color:var(--ink)}
+.btn-danger{background:#fff0ee;color:var(--red)}
+.entry{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.entry:last-child{border-bottom:0}
+.entry-icon{width:38px;height:38px;border-radius:8px;display:grid;place-items:center;color:#fff;font-size:20px}
+.entry-name{font-weight:800;margin-bottom:3px}
+.entry-meta{color:var(--muted);font-size:13px;line-height:1.45}
+.entry-amt{text-align:right;font-weight:800;font-family:var(--mono);white-space:nowrap}
+.delete{border:0;background:transparent;color:var(--muted);font-size:20px;padding:4px;margin-top:4px}
+.bars{display:flex;flex-direction:column;gap:10px}
+.bar-line{display:grid;grid-template-columns:112px 1fr 76px;gap:10px;align-items:center;font-size:13px}
+.bar-track{height:9px;border-radius:99px;background:#e8eee9;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px}
+.filters{display:flex;gap:8px;overflow:auto;padding-bottom:8px;margin-bottom:8px}
+.filter{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 13px;font-weight:800;color:var(--muted);white-space:nowrap}
+.filter.active{background:var(--dark);border-color:var(--dark);color:#fff}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mini-table{display:flex;flex-direction:column}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row span:first-child{color:var(--muted)}
+.row strong{font-family:var(--mono)}
+.empty{text-align:center;color:var(--muted);padding:28px 10px}
+.empty i{font-size:34px;display:block;margin-bottom:8px;color:#b7c4bd}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(16px);background:var(--dark);color:#fff;border-radius:8px;padding:12px 16px;box-shadow:0 18px 34px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:.2s;z-index:60;font-weight:800}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.hidden{display:none!important}
+canvas{max-width:100%}
+@media (max-width:860px){
+  .hero-grid,.dashboard,.split{grid-template-columns:1fr}
+  .metrics,.garage-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .main{margin-top:-28px}
+}
+@media (max-width:560px){
+  .hero-inner{padding:18px 14px 44px}
+  .topbar{align-items:flex-start}
+  .status-pill{font-size:12px}
+  .quick-grid,.form-grid,.fuel-types,.type-toggle{grid-template-columns:1fr}
+  .tabs-inner{grid-template-columns:repeat(4,1fr);gap:4px;padding:8px}
+  .tab{font-size:11px;flex-direction:column;gap:2px;padding:8px 4px}
+  .metrics{grid-template-columns:1fr}
+  .garage-grid{grid-template-columns:1fr}
+  .bar-line{grid-template-columns:1fr}
+  .entry{grid-template-columns:auto 1fr}
+  .entry-amt{grid-column:2;text-align:left}
+}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="header">
-    <div class="header-top">
-      <div class="logo-box">MAZDA</div>
-      <div class="model-name">626 GD</div>
-    </div>
-    <div class="header-sub">БОРТОВИЙ ЖУРНАЛ ВИТРАТ · СЕРІЯ 1989</div>
-  </div>
-  <div class="odo-strip" id="odo-display">ОДОМЕТР: — КМ</div>
-  <div class="tabs">
-    <button class="tab active" onclick="showTab('dash')"><i class="ti ti-layout-dashboard"></i>ПАНЕЛЬ</button>
-    <button class="tab" onclick="showTab('add')"><i class="ti ti-plus"></i>ЗАПИС</button>
-    <button class="tab" onclick="showTab('log')"><i class="ti ti-list"></i>ЖУРНАЛ</button>
-    <button class="tab" onclick="showTab('anal')"><i class="ti ti-chart-bar"></i>АНАЛІЗ</button>
-  </div>
-  <div class="content">
-
-    <!-- ПАНЕЛЬ -->
-    <div class="section active" id="tab-dash">
-      <div class="gauge-row" id="gauges"></div>
-      <div class="panel">
-        <div class="panel-title"><i class="ti ti-clock"></i>ОСТАННІ ОПЕРАЦІЇ</div>
-        <div id="dash-recent"></div>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="topbar">
+        <div class="brand"><div class="brand-mark">GD</div><div><span>Mazda 626</span><small>GD garage log</small></div></div>
+        <div class="status-pill"><i class="ti ti-gauge"></i><span id="odo-display">Одометр: — км</span></div>
       </div>
-      <div class="panel">
-        <div class="panel-title"><i class="ti ti-road"></i>ВИТРАТИ ЗА КАТЕГОРІЄЮ</div>
-        <div id="dash-bars"></div>
-      </div>
-    </div>
-
-    <!-- ЗАПИС -->
-    <div class="section" id="tab-add">
-      <div class="panel">
-        <div class="panel-title"><i class="ti ti-file-plus"></i>НОВА ОПЕРАЦІЯ</div>
-        <div class="form-row">
-          <label>КАТЕГОРІЯ</label>
-          <select id="a-type" onchange="toggleF()">
-            <option value="fuel">ЗАПРАВКА</option>
-            <option value="service">СТО / РЕМОНТ</option>
-            <option value="oil">МАСЛО / ФІЛЬТРИ</option>
-            <option value="tires">ШИНИ / ГУМА</option>
-            <option value="wash">МИЙКА</option>
-            <option value="parking">ПАРКОВКА</option>
-            <option value="insurance">СТРАХОВКА</option>
-            <option value="fine">ШТРАФ</option>
-            <option value="other">ІНШЕ</option>
-          </select>
+      <div class="hero-grid">
+        <div>
+          <h1>Mazda 626 GD · бортовий журнал.</h1>
+          <p>Облік саме під 626 GD: заправки, газ/бензин, поїздки, сервіс, масло, шини, пробіг за день і витрата на 100 км з реальних записів.</p>
         </div>
-        <div class="form-row"><label>ДАТА</label><input type="date" id="a-date"></div>
-        <div class="form-row"><label>ОДОМЕТР (КМ)</label><input type="number" id="a-odo" placeholder="125400"></div>
-        <div id="fuel-f">
-          <div class="form-row">
-            <label>ТИП ПАЛИВА</label>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;" id="fuel-type-btns">
-              <button type="button" class="ftype-btn active" data-ft="А-95" onclick="selFT(this)">А-95</button>
-              <button type="button" class="ftype-btn" data-ft="А-92" onclick="selFT(this)">А-92</button>
-              <button type="button" class="ftype-btn" data-ft="ГАЗ" onclick="selFT(this)">ГАЗ</button>
-              <button type="button" class="ftype-btn" data-ft="ДП" onclick="selFT(this)">ДП</button>
+        <div class="quick-card">
+          <div class="quick-grid">
+            <div class="quick-stat"><div class="quick-label">626 сьогодні</div><div class="quick-val" id="hero-km">— км</div></div>
+            <div class="quick-stat"><div class="quick-label">Темп руху</div><div class="quick-val" id="hero-speed">—</div></div>
+            <div class="quick-stat"><div class="quick-label">Апетит GD</div><div class="quick-val" id="hero-cons">—</div></div>
+            <div class="quick-stat"><div class="quick-label">Гараж / місяць</div><div class="quick-val" id="hero-month">— ₴</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="photo-credit">Фото: <a href="https://commons.wikimedia.org/wiki/File:1988_Mazda_626_(GD)_2.2i_sedan_(19632306251).jpg" target="_blank" rel="noreferrer">Jeremy, CC BY 2.0</a></div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <div class="tabs-inner">
+      <button class="tab active" data-tab="dash"><i class="ti ti-layout-dashboard"></i><span>Панель</span></button>
+      <button class="tab" data-tab="add"><i class="ti ti-circle-plus"></i><span>Запис</span></button>
+      <button class="tab" data-tab="log"><i class="ti ti-list-details"></i><span>Журнал</span></button>
+      <button class="tab" data-tab="anal"><i class="ti ti-chart-donut"></i><span>Аналіз</span></button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <section class="section active" id="tab-dash">
+      <div class="garage-card">
+        <div class="garage-head">
+          <div><div class="garage-title">Mazda 626 GD</div><div class="garage-sub">1987-1991 · передній привід · журнал власника</div></div>
+          <div class="garage-badge">626 GD</div>
+        </div>
+        <div class="garage-grid" id="mazda-profile"></div>
+      </div>
+      <div class="metrics" id="dash-metrics"></div>
+      <div class="dashboard">
+        <div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title"><i class="ti ti-clock"></i>Останні записи</div><button class="btn btn-secondary" onclick="showTab('add')"><i class="ti ti-plus"></i>Додати</button></div>
+            <div id="recent-list"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title"><i class="ti ti-route"></i>Використання 626</div><span class="hint">за введеними поїздками</span></div>
+            <div id="usage-list" class="mini-table"></div>
+          </div>
+        </div>
+        <div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title"><i class="ti ti-chart-bar"></i>Витрати за категоріями</div></div>
+            <div id="category-bars" class="bars"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title"><i class="ti ti-bulb"></i>Корисні підказки</div></div>
+            <div id="dash-insights" class="mini-table"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title"><i class="ti ti-tool"></i>ТО для 626 GD</div><span class="hint">орієнтири</span></div>
+            <div id="service-plan" class="mini-table"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="tab-add">
+      <div class="split">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><i class="ti ti-file-plus"></i>Новий запис</div></div>
+          <div class="type-toggle">
+            <button class="type-btn active" data-mode="fuel"><i class="ti ti-gas-station"></i>Заправка</button>
+            <button class="type-btn" data-mode="trip"><i class="ti ti-route"></i>Поїздка</button>
+            <button class="type-btn" data-mode="expense"><i class="ti ti-receipt"></i>Витрата</button>
+          </div>
+
+          <div class="form-grid">
+            <div class="field"><label>Дата</label><input type="date" id="date"></div>
+            <div class="field"><label>Одометр, км</label><input type="number" id="odo" placeholder="125400"></div>
+          </div>
+
+          <div id="fuel-form">
+            <div class="field">
+              <label>Тип палива</label>
+              <div class="fuel-types" id="fuel-types">
+                <button type="button" class="chip active" data-fuel="А-95">А-95</button>
+                <button type="button" class="chip" data-fuel="А-92">А-92</button>
+                <button type="button" class="chip" data-fuel="А-98">А-98</button>
+                <button type="button" class="chip" data-fuel="Газ LPG">Газ LPG</button>
+                <button type="button" class="chip" data-fuel="ДП">ДП</button>
+              </div>
             </div>
+            <div class="form-grid">
+              <div class="field"><label>Літри / кВт·год</label><input type="number" id="liters" step="0.01" placeholder="38.5"></div>
+              <div class="field"><label>Ціна за одиницю</label><input type="number" id="price" step="0.01" placeholder="56.90"></div>
+            </div>
+            <div class="field"><label>Сума, ₴</label><input type="number" id="fuel-amount" step="0.01" placeholder="рахується автоматично"></div>
+            <div class="field"><label>АЗС / нотатка</label><input type="text" id="fuel-note" placeholder="WOG, повний бак, місто/траса, якість пального"></div>
           </div>
-          <div class="form-2col">
-            <div class="form-row"><label>ЛІТРИ</label><input type="number" id="a-lit" placeholder="35" step="0.1" oninput="calcF()"></div>
-            <div class="form-row"><label>₴ / ЛІТ</label><input type="number" id="a-ppl" placeholder="56" step="0.01" oninput="calcF()"></div>
-          </div>
-          <div class="form-row"><label>СУМА ₴ (або авто)</label><input type="number" id="a-fuel-sum" placeholder="1960" oninput="clrF()"></div>
-          <div class="form-row"><label>АЗС / ПРИМІТКА</label><input type="text" id="a-note" placeholder="WOG, повний бак"></div>
-        </div>
-        <div id="other-f" style="display:none">
-          <div class="form-row"><label>СУМА ₴</label><input type="number" id="a-sum" placeholder="0" step="0.01"></div>
-          <div class="form-row"><label>ДЕТАЛІ / ПРИМІТКА</label><input type="text" id="a-detail" placeholder="Shell 10W-40, свічки NGK..."></div>
-        </div>
-        <button class="btn-retro btn-save" onclick="addE()">// ЗБЕРЕГТИ //</button>
-      </div>
-    </div>
 
-    <!-- ЖУРНАЛ -->
-    <div class="section" id="tab-log">
-      <div class="filter-strip" id="log-filters">
-        <button class="fbtn active" onclick="setF('all',this)">УСІ</button>
-        <button class="fbtn" onclick="setF('fuel',this)">ПАЛИВО</button>
-        <button class="fbtn" onclick="setF('service',this)">СТО</button>
-        <button class="fbtn" onclick="setF('oil',this)">МАСЛО</button>
-        <button class="fbtn" onclick="setF('tires',this)">ШИНИ</button>
-        <button class="fbtn" onclick="setF('other2',this)">ІНШЕ</button>
+          <div id="trip-form" class="hidden">
+            <div class="form-grid">
+              <div class="field"><label>Дистанція, км</label><input type="number" id="trip-km" step="0.1" placeholder="42"></div>
+              <div class="field"><label>Час у дорозі, хв</label><input type="number" id="trip-min" step="1" placeholder="55"></div>
+            </div>
+            <div class="form-grid">
+              <div class="field"><label>Режим</label><select id="trip-kind"><option value="місто">Місто</option><option value="траса">Траса</option><option value="змішаний">Змішаний</option><option value="прогріви">Прогріви / короткі поїздки</option></select></div>
+              <div class="field"><label>Приблизно спалено, л</label><input type="number" id="trip-liters" step="0.01" placeholder="необов'язково"></div>
+            </div>
+            <div class="field"><label>Маршрут / нотатка</label><input type="text" id="trip-note" placeholder="Дім → робота → магазин"></div>
+          </div>
+
+          <div id="expense-form" class="hidden">
+            <div class="form-grid">
+              <div class="field"><label>Категорія</label><select id="expense-type"><option value="service">СТО / ремонт</option><option value="oil">Масло / фільтри</option><option value="tires">Шини</option><option value="wash">Мийка</option><option value="parking">Паркування</option><option value="insurance">Страхування</option><option value="fine">Штраф</option><option value="other">Інше</option></select></div>
+              <div class="field"><label>Сума, ₴</label><input type="number" id="expense-amount" step="0.01" placeholder="850"></div>
+            </div>
+            <div class="field"><label>Деталі</label><textarea id="expense-note" placeholder="Що саме зроблено або оплачено"></textarea></div>
+          </div>
+
+          <button class="btn btn-primary" onclick="addEntry()"><i class="ti ti-device-floppy"></i>Зберегти запис</button>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><i class="ti ti-sparkles"></i>Що корисно для 626 GD</div></div>
+          <div class="mini-table">
+            <div class="row"><span>Пробіг за сьогодні</span><strong>по поїздках</strong></div>
+            <div class="row"><span>Витрата на 100 км</span><strong>пальне + пробіг</strong></div>
+            <div class="row"><span>Ознаки “жере бензин”</span><strong>понад норму GD</strong></div>
+            <div class="row"><span>Нагадування ТО</span><strong>масло, шини, СТО</strong></div>
+            <div class="row"><span>Вартість утримання</span><strong>грн / км</strong></div>
+          </div>
+        </div>
       </div>
-      <div class="panel" style="padding:10px 14px;">
+    </section>
+
+    <section class="section" id="tab-log">
+      <div class="panel">
+        <div class="filters" id="filters">
+          <button class="filter active" data-filter="all">Усі</button>
+          <button class="filter" data-filter="fuel">Паливо</button>
+          <button class="filter" data-filter="trip">Поїздки</button>
+          <button class="filter" data-filter="service">СТО</button>
+          <button class="filter" data-filter="oil">Масло</button>
+          <button class="filter" data-filter="other">Інше</button>
+        </div>
         <div id="log-list"></div>
       </div>
-    </div>
+    </section>
 
-    <!-- АНАЛІЗ -->
-    <div class="section" id="tab-anal">
-      <div class="gauge-row" id="anal-gauges"></div>
-      <div class="panel">
-        <div class="panel-title"><i class="ti ti-gas-station"></i>ПАЛИВНА АНАЛІТИКА</div>
-        <div id="anal-fuel"></div>
+    <section class="section" id="tab-anal">
+      <div class="metrics" id="anal-metrics"></div>
+      <div class="split">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><i class="ti ti-gas-station"></i>Паливна аналітика</div></div>
+          <div id="fuel-analytics" class="mini-table"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><i class="ti ti-road"></i>Стиль використання</div></div>
+          <div id="drive-analytics" class="mini-table"></div>
+        </div>
       </div>
-      <div class="panel">
-        <div class="panel-title"><i class="ti ti-chart-line"></i>ВИТРАТИ ПО МІСЯЦЯХ</div>
-        <div style="position:relative;width:100%;height:180px;"><canvas id="monthChart" role="img" aria-label="Витрати по місяцях">Дані відсутні</canvas></div>
+      <div class="split">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><i class="ti ti-chart-line"></i>Витрати по місяцях</div></div>
+          <div style="height:240px"><canvas id="month-chart"></canvas></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><i class="ti ti-chart-pie"></i>Структура витрат</div></div>
+          <div style="height:240px"><canvas id="type-chart"></canvas></div>
+        </div>
       </div>
-      <div class="panel">
-        <div class="panel-title"><i class="ti ti-chart-pie"></i>СТРУКТУРА ВИТРАТ</div>
-        <div id="pie-legend" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;font-size:10px;color:#C8A96E;"></div>
-        <div style="position:relative;width:100%;height:180px;"><canvas id="pieChart" role="img" aria-label="Розподіл витрат">Дані відсутні</canvas></div>
-      </div>
-      <div class="panel">
-        <div class="panel-title"><i class="ti ti-bulb"></i>ДІАГНОСТИКА</div>
-        <div id="anal-insights"></div>
-      </div>
-      <div class="scanline" id="anal-scan">SYS: ГОТОВИЙ ДО АНАЛІЗУ</div>
-    </div>
-
-  </div>
+    </section>
+  </main>
 </div>
-<div class="toast-r" id="toast"></div>
+<div class="toast" id="toast"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+const STORAGE_KEY="autolife_entries_v2";
 let entries=[];
-try{entries=JSON.parse(localStorage.getItem('mz626_app')||'[]');}catch(e){}
-let curFilter='all';
-let pieInst=null,monthInst=null;
+let mode="fuel";
+let filter="all";
+let selectedFuel="А-95";
+let monthChart=null;
+let typeChart=null;
 
-const TM={
-  fuel:{label:'Заправка',color:'#D4860A'},
-  service:{label:'СТО',color:'#C0392B'},
-  oil:{label:'Масло',color:'#854F0B'},
-  tires:{label:'Шини',color:'#5F5E5A'},
-  wash:{label:'Мийка',color:'#0F6E56'},
-  parking:{label:'Парковка',color:'#3B6D11'},
-  insurance:{label:'Страховка',color:'#533AB7'},
-  fine:{label:'Штраф',color:'#8B1A1A'},
-  other:{label:'Інше',color:'#444441'},
+const MAZDA_626_GD={
+  model:"Mazda 626 GD",
+  years:"1987-1991",
+  drive:"FWD",
+  fuel:"А-92 / А-95 / LPG",
+  cityNorm:10.5,
+  highwayNorm:7.2,
+  mixedNorm:8.8,
+  oilInterval:8000,
+  serviceInterval:10000,
+  tireInterval:12000
 };
 
-function save(){try{localStorage.setItem('mz626_app',JSON.stringify(entries));}catch(e){}}
+const servicePlan=[
+  {type:"oil",label:"Масло + фільтр",interval:8000,hint:"кожні 7-8 тис. км"},
+  {type:"service",label:"Огляд ходової",interval:10000,hint:"стійки, сайлентблоки, гальма"},
+  {type:"tires",label:"Шини / тиск",interval:12000,hint:"знос, баланс, тиск"},
+  {type:"fuel",label:"Паливна система",interval:15000,hint:"фільтр, шланги, підсоси"}
+];
 
-function showTab(n){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+n).classList.add('active');
-  ['dash','add','log','anal'].forEach((t,i)=>{if(t===n)document.querySelectorAll('.tab')[i].classList.add('active');});
-  if(n==='dash')renderDash();
-  if(n==='log')renderLog();
-  if(n==='anal')renderAnal();
-  updateOdo();
+const meta={
+  fuel:{label:"Заправка",icon:"ti-gas-station",color:"#f0a92e"},
+  trip:{label:"Поїздка",icon:"ti-route",color:"#127078"},
+  service:{label:"СТО / ремонт",icon:"ti-tool",color:"#d94b3d"},
+  oil:{label:"Масло",icon:"ti-droplet",color:"#8c6b24"},
+  tires:{label:"Шини",icon:"ti-tire",color:"#59615e"},
+  wash:{label:"Мийка",icon:"ti-wash",color:"#3369d6"},
+  parking:{label:"Паркування",icon:"ti-parking",color:"#16875a"},
+  insurance:{label:"Страхування",icon:"ti-shield-check",color:"#7755c8"},
+  fine:{label:"Штраф",icon:"ti-alert-triangle",color:"#b93229"},
+  other:{label:"Інше",icon:"ti-dots",color:"#68736f"}
+};
+
+try{entries=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]")}catch(error){entries=[]}
+if(!entries.length){
+  try{
+    const old=JSON.parse(localStorage.getItem("mz626_app")||"[]");
+    entries=old.map(item=>({id:item.id||Date.now()+Math.random(),type:item.type||"other",date:item.date,odo:item.odo||null,amount:item.amount||0,liters:item.liters||0,fuelType:item.fuelType||"А-95",note:item.note||""}));
+  }catch(error){}
 }
 
-function updateOdo(){
-  const odos=entries.filter(e=>e.odo).sort((a,b)=>new Date(b.date)-new Date(a.date));
-  document.getElementById('odo-display').textContent=odos.length?'ОДОМЕТР: '+fmt(odos[0].odo)+' КМ':'ОДОМЕТР: — КМ';
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(entries))}
+function money(value){return Math.round(value||0).toLocaleString("uk-UA")}
+function num(value,digits=1){return Number(value||0).toLocaleString("uk-UA",{maximumFractionDigits:digits})}
+function dateText(value){return new Date(value+"T12:00:00").toLocaleDateString("uk-UA",{day:"2-digit",month:"2-digit",year:"numeric"})}
+function todayKey(){
+  const parts=Object.fromEntries(new Intl.DateTimeFormat("uk-UA",{timeZone:"Europe/Kyiv",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date()).map(part=>[part.type,part.value]));
+  return `${parts.year}-${parts.month}-${parts.day}`;
+}
+function currentMonthKey(){return todayKey().slice(0,7)}
+function sum(list,key){return list.reduce((total,item)=>total+(Number(item[key])||0),0)}
+function sortedEntries(){return [...entries].sort((a,b)=>new Date(b.date)-new Date(a.date)||b.id-a.id)}
+function odoLatest(){return sortedEntries().find(item=>item.odo)}
+function odometerDistance(){
+  const odos=entries.filter(item=>item.odo).sort((a,b)=>Number(a.odo)-Number(b.odo));
+  return odos.length>1?Math.max(0,odos[odos.length-1].odo-odos[0].odo):0;
+}
+function kmSince(type){
+  const latestOdo=odoLatest()?.odo;
+  const latestType=sortedEntries().find(item=>item.type===type&&item.odo);
+  if(!latestOdo||!latestType)return null;
+  return Math.max(0,latestOdo-latestType.odo);
+}
+function stats(){
+  const fuel=entries.filter(item=>item.type==="fuel");
+  const trips=entries.filter(item=>item.type==="trip");
+  const todayTrips=trips.filter(item=>item.date===todayKey());
+  const monthEntries=entries.filter(item=>item.date&&item.date.slice(0,7)===currentMonthKey());
+  const tripKm=sum(trips,"km");
+  const todayKm=sum(todayTrips,"km");
+  const tripMinutes=sum(trips,"minutes");
+  const todayMinutes=sum(todayTrips,"minutes");
+  const totalLiters=sum(fuel,"liters");
+  const tripLiters=sum(trips,"liters");
+  const distance=tripKm || odometerDistance();
+  const fuelConsumption=distance>0&&totalLiters>0?(totalLiters/distance)*100:null;
+  const tripConsumption=tripKm>0&&tripLiters>0?(tripLiters/tripKm)*100:null;
+  const consumption=tripConsumption || fuelConsumption;
+  const totalCost=entries.filter(item=>item.type!=="trip").reduce((total,item)=>total+(Number(item.amount)||0),0);
+  const monthCost=monthEntries.filter(item=>item.type!=="trip").reduce((total,item)=>total+(Number(item.amount)||0),0);
+  const cityKm=sum(trips.filter(item=>item.kind==="місто"),"km");
+  const highwayKm=sum(trips.filter(item=>item.kind==="траса"),"km");
+  const mixedKm=sum(trips.filter(item=>item.kind==="змішаний"),"km");
+  return {fuel,trips,todayTrips,monthEntries,tripKm,todayKm,tripMinutes,todayMinutes,totalLiters,tripLiters,distance,consumption,totalCost,monthCost,cityKm,highwayKm,mixedKm,avgSpeed:tripMinutes>0?tripKm/(tripMinutes/60):null,todaySpeed:todayMinutes>0?todayKm/(todayMinutes/60):null,costKm:distance>0?totalCost/distance:null};
 }
 
-function toggleF(){
-  const t=document.getElementById('a-type').value;
-  document.getElementById('fuel-f').style.display=t==='fuel'?'':'none';
-  document.getElementById('other-f').style.display=t!=='fuel'?'':'none';
+function showTab(name){
+  document.querySelectorAll(".section").forEach(section=>section.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(tab=>tab.classList.toggle("active",tab.dataset.tab===name));
+  document.getElementById("tab-"+name).classList.add("active");
+  render();
 }
 
-function calcF(){
-  const l=parseFloat(document.getElementById('a-lit').value)||0;
-  const p=parseFloat(document.getElementById('a-ppl').value)||0;
-  if(l>0&&p>0)document.getElementById('a-fuel-sum').value=(l*p).toFixed(2);
+function setMode(nextMode){
+  mode=nextMode;
+  document.querySelectorAll(".type-btn").forEach(btn=>btn.classList.toggle("active",btn.dataset.mode===mode));
+  document.getElementById("fuel-form").classList.toggle("hidden",mode!=="fuel");
+  document.getElementById("trip-form").classList.toggle("hidden",mode!=="trip");
+  document.getElementById("expense-form").classList.toggle("hidden",mode!=="expense");
 }
-function clrF(){document.getElementById('a-lit').value='';document.getElementById('a-ppl').value='';}
 
-function addE(){
-  const type=document.getElementById('a-type').value;
-  const dateV=document.getElementById('a-date').value;
-  const odo=parseFloat(document.getElementById('a-odo').value)||null;
-  let amount=0,liters=0,note='';
-  if(type==='fuel'){
-    amount=parseFloat(document.getElementById('a-fuel-sum').value)||0;
-    liters=parseFloat(document.getElementById('a-lit').value)||0;
-    note=document.getElementById('a-note').value.trim();
-  }else{
-    amount=parseFloat(document.getElementById('a-sum').value)||0;
-    note=document.getElementById('a-detail').value.trim();
+function showToast(text){
+  const toast=document.getElementById("toast");
+  toast.textContent=text;
+  toast.classList.add("show");
+  setTimeout(()=>toast.classList.remove("show"),2200);
+}
+
+function calcFuelAmount(){
+  const liters=Number(document.getElementById("liters").value)||0;
+  const price=Number(document.getElementById("price").value)||0;
+  if(liters>0&&price>0)document.getElementById("fuel-amount").value=(liters*price).toFixed(2);
+}
+
+function addEntry(){
+  const date=document.getElementById("date").value;
+  const odo=Number(document.getElementById("odo").value)||null;
+  if(!date){showToast("Вкажи дату запису");return}
+  let item=null;
+  if(mode==="fuel"){
+    const liters=Number(document.getElementById("liters").value)||0;
+    const amount=Number(document.getElementById("fuel-amount").value)||0;
+    const price=Number(document.getElementById("price").value)||null;
+    if(amount<=0){showToast("Вкажи суму заправки");return}
+    item={id:Date.now(),type:"fuel",date,odo,amount,liters,price,fuelType:selectedFuel,note:document.getElementById("fuel-note").value.trim()};
   }
-  if(!dateV||amount<=0){showToast('ПОМИЛКА: ВКАЖІТЬ ДАТУ ТА СУМУ');return;}
-  entries.unshift({id:Date.now(),type,date:dateV,odo,amount,liters,note});
+  if(mode==="trip"){
+    const km=Number(document.getElementById("trip-km").value)||0;
+    const minutes=Number(document.getElementById("trip-min").value)||0;
+    const liters=Number(document.getElementById("trip-liters").value)||0;
+    if(km<=0){showToast("Вкажи дистанцію поїздки");return}
+    item={id:Date.now(),type:"trip",date,odo,amount:0,km,minutes,liters,kind:document.getElementById("trip-kind").value,note:document.getElementById("trip-note").value.trim()};
+  }
+  if(mode==="expense"){
+    const expenseType=document.getElementById("expense-type").value;
+    const amount=Number(document.getElementById("expense-amount").value)||0;
+    if(amount<=0){showToast("Вкажи суму витрати");return}
+    item={id:Date.now(),type:expenseType,date,odo,amount,note:document.getElementById("expense-note").value.trim()};
+  }
+  entries.unshift(item);
   save();
-  showToast('ЗАПИС ЗБЕРЕЖЕНО //');
-  ['a-date','a-odo','a-fuel-sum','a-lit','a-ppl','a-note','a-sum','a-detail'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('a-date').value=new Date().toISOString().split('T')[0];
-  document.getElementById('a-type').value='fuel';
-  toggleF();
-  updateOdo();
+  clearForm();
+  render();
+  showToast("Запис збережено");
+  showTab("dash");
 }
 
-function delE(id){
-  if(!confirm('Видалити запис?'))return;
-  entries=entries.filter(e=>e.id!==id);
-  save();renderLog();renderDash();updateOdo();
+function clearForm(){
+  ["odo","liters","price","fuel-amount","fuel-note","trip-km","trip-min","trip-liters","trip-note","expense-amount","expense-note"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("date").value=todayKey();
 }
 
-function setF(f,btn){
-  curFilter=f;
-  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderLog();
+function deleteEntry(id){
+  if(!confirm("Видалити запис?"))return;
+  entries=entries.filter(item=>item.id!==id);
+  save();
+  render();
 }
 
-function fmt(n){return Math.round(n).toLocaleString('uk-UA');}
-function fmtDate(d){return new Date(d).toLocaleDateString('uk-UA',{day:'2-digit',month:'2-digit',year:'2-digit'});}
-
-function entryHtml(e,del){
-  const m=TM[e.type]||TM.other;
-  return `<div class="entry-row">
-    <div class="entry-dot" style="background:${m.color};"></div>
-    <div class="entry-info">
-      <div class="entry-name">${m.label}${e.note?' · '+e.note:''}</div>
-      <div class="entry-meta">${fmtDate(e.date)}${e.odo?' · '+fmt(e.odo)+' км':''}${e.liters?' · '+e.liters+' л':''}</div>
+function entryHtml(item,canDelete=false){
+  const info=meta[item.type]||meta.other;
+  const details=[];
+  details.push(dateText(item.date));
+  if(item.odo)details.push(`${money(item.odo)} км`);
+  if(item.type==="fuel"){
+    if(item.fuelType)details.push(item.fuelType);
+    if(item.liters)details.push(`${num(item.liters,2)} л`);
+    if(item.price)details.push(`${num(item.price,2)} ₴/л`);
+  }
+  if(item.type==="trip"){
+    if(item.km)details.push(`${num(item.km,1)} км`);
+    if(item.minutes)details.push(`${num(item.minutes,0)} хв`);
+    if(item.minutes&&item.km)details.push(`${num(item.km/(item.minutes/60),1)} км/год`);
+    if(item.kind)details.push(item.kind);
+  }
+  const amount=item.type==="trip"?"поїздка":`${money(item.amount)} ₴`;
+  return `<div class="entry">
+    <div class="entry-icon" style="background:${info.color}"><i class="ti ${info.icon}"></i></div>
+    <div>
+      <div class="entry-name">${info.label}${item.note?` · ${item.note}`:""}</div>
+      <div class="entry-meta">${details.join(" · ")}</div>
     </div>
-    <div style="text-align:right;flex-shrink:0;">
-      <div class="entry-amt">${fmt(e.amount)} ₴</div>
-      ${del?`<button class="entry-del" onclick="delE(${e.id})" aria-label="Видалити"><i class="ti ti-trash"></i></button>`:''}
-    </div>
+    <div class="entry-amt">${amount}${canDelete?`<br><button class="delete" onclick="deleteEntry(${item.id})" aria-label="Видалити"><i class="ti ti-trash"></i></button>`:""}</div>
   </div>`;
 }
 
+function metric(icon,label,value,unit,color="#16875a"){
+  return `<div class="metric"><div class="icon" style="color:${color};background:${color}18"><i class="ti ${icon}"></i></div><div class="metric-label">${label}</div><div class="metric-val">${value}</div><div class="metric-unit">${unit}</div></div>`;
+}
+
+function renderHeader(s){
+  const odo=odoLatest();
+  document.getElementById("odo-display").textContent=odo?`Одометр: ${money(odo.odo)} км`:"Одометр: — км";
+  document.getElementById("hero-km").textContent=s.todayKm>0?`${num(s.todayKm,1)} км`:"— км";
+  document.getElementById("hero-speed").textContent=s.todaySpeed?`${num(s.todaySpeed,0)} км/год`:"—";
+  document.getElementById("hero-cons").textContent=s.consumption?`${num(s.consumption,1)} л`:"—";
+  document.getElementById("hero-month").textContent=`${money(s.monthCost)} ₴`;
+}
+
 function renderDash(){
-  const now=new Date();
-  const thisM=entries.filter(e=>{const d=new Date(e.date);return d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth();});
-  const totalM=thisM.reduce((s,e)=>s+e.amount,0);
-  const fuelM=thisM.filter(e=>e.type==='fuel').reduce((s,e)=>s+e.amount,0);
-  const litM=thisM.filter(e=>e.type==='fuel').reduce((s,e)=>s+(e.liters||0),0);
-  const totalAll=entries.reduce((s,e)=>s+e.amount,0);
-  const lastFuel=entries.find(e=>e.type==='fuel');
-  document.getElementById('gauges').innerHTML=`
-    <div class="gauge gauge-accent"><div class="gauge-label">МІСЯЦЬ</div><div class="gauge-val">${fmt(totalM)}</div><div class="gauge-unit">ГРИВЕНЬ</div></div>
-    <div class="gauge gauge-green"><div class="gauge-label">ПАЛИВО/МІС</div><div class="gauge-val">${fmt(fuelM)}</div><div class="gauge-unit">${litM>0?litM.toFixed(1)+' Л':'—'}</div></div>
-    <div class="gauge gauge-accent"><div class="gauge-label">ВСЬОГО</div><div class="gauge-val">${fmt(totalAll)}</div><div class="gauge-unit">${entries.length} ЗАПИСІВ</div></div>
-    <div class="gauge gauge-green"><div class="gauge-label">ОСТАННЯ ЗАП.</div><div class="gauge-val" style="font-size:15px;">${lastFuel?fmt(lastFuel.amount)+' ₴':'—'}</div><div class="gauge-unit">${lastFuel?fmtDate(lastFuel.date):''}</div></div>
-  `;
-  const recent=entries.slice(0,5);
-  document.getElementById('dash-recent').innerHTML=recent.length?recent.map(e=>entryHtml(e,false)).join(''):'<div class="empty-r"><i class="ti ti-mood-empty"></i>Записів немає</div>';
-  const totByType={};entries.forEach(e=>{totByType[e.type]=(totByType[e.type]||0)+e.amount;});
-  const maxVal=Math.max(...Object.values(totByType),1);
-  document.getElementById('dash-bars').innerHTML=Object.entries(totByType).sort((a,b)=>b[1]-a[1]).map(([t,v])=>{
-    const m=TM[t]||TM.other;
-    return `<div class="bar-wrap"><div class="bar-label"><span>${m.label}</span><span style="color:#F5C842;">${fmt(v)} ₴</span></div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/maxVal*100)}%;background:${m.color};"></div></div></div>`;
-  }).join('')||'<div class="empty-r">Немає даних</div>';
+  const s=stats();
+  renderMazdaProfile();
+  document.getElementById("dash-metrics").innerHTML=[
+    metric("ti-road","Сьогодні",s.todayKm>0?num(s.todayKm,1):"—","км за день","#127078"),
+    metric("ti-gauge","Швидкість",s.avgSpeed?num(s.avgSpeed,0):"—","км/год середня","#3369d6"),
+    metric("ti-gas-station","Витрата",s.consumption?num(s.consumption,1):"—","л/100 км","#f0a92e"),
+    metric("ti-cash","Місяць",money(s.monthCost),"грн витрат","#16875a")
+  ].join("");
+
+  const recent=sortedEntries().slice(0,6);
+  document.getElementById("recent-list").innerHTML=recent.length?recent.map(item=>entryHtml(item,false)).join(""):`<div class="empty"><i class="ti ti-clipboard"></i>Записів поки немає</div>`;
+  document.getElementById("usage-list").innerHTML=[
+    row("Усього проїхано",s.distance>0?`${num(s.distance,1)} км`:"—"),
+    row("Пробіг сьогодні",s.todayKm>0?`${num(s.todayKm,1)} км`:"—"),
+    row("Час у дорозі сьогодні",s.todayMinutes>0?`${num(s.todayMinutes,0)} хв`:"—"),
+    row("Ціна 1 км",s.costKm?`${num(s.costKm,2)} ₴`:"—"),
+    row("Внесено поїздок",s.trips.length)
+  ].join("");
+
+  const totals={};
+  entries.filter(item=>item.type!=="trip").forEach(item=>totals[item.type]=(totals[item.type]||0)+Number(item.amount||0));
+  const max=Math.max(...Object.values(totals),1);
+  document.getElementById("category-bars").innerHTML=Object.keys(totals).sort((a,b)=>totals[b]-totals[a]).map(type=>{
+    const info=meta[type]||meta.other;
+    return `<div class="bar-line"><strong>${info.label}</strong><div class="bar-track"><div class="bar-fill" style="width:${Math.max(4,totals[type]/max*100)}%;background:${info.color}"></div></div><span>${money(totals[type])} ₴</span></div>`;
+  }).join("")||`<div class="empty">Додай першу витрату або заправку</div>`;
+
+  document.getElementById("dash-insights").innerHTML=insights(s).map(text=>row(text.label,text.value)).join("");
+  document.getElementById("service-plan").innerHTML=servicePlan.map(item=>{
+    const driven=kmSince(item.type);
+    const value=driven===null?item.hint:driven>=item.interval?`час перевірити · ${money(driven)} км`:`ще ${money(item.interval-driven)} км`;
+    return row(item.label,value);
+  }).join("");
+}
+
+function row(label,value){return `<div class="row"><span>${label}</span><strong>${value}</strong></div>`}
+
+function renderMazdaProfile(){
+  document.getElementById("mazda-profile").innerHTML=[
+    ["Покоління",MAZDA_626_GD.years],
+    ["Привід",MAZDA_626_GD.drive],
+    ["Паливо",MAZDA_626_GD.fuel],
+    ["Орієнтир",`${MAZDA_626_GD.mixedNorm} л/100`]
+  ].map(([label,value])=>`<div class="garage-spec"><span>${label}</span><strong>${value}</strong></div>`).join("");
+}
+
+function insights(s){
+  const list=[];
+  if(!s.trips.length)list.push({label:"Для пробігу за день",value:"додай поїздку"});
+  if(!s.fuel.length)list.push({label:"Для витрати палива",value:"додай заправку"});
+  if(s.consumption){
+    if(s.consumption<=MAZDA_626_GD.highwayNorm)list.push({label:"Апетит 626",value:"як для траси"});
+    else if(s.consumption<=MAZDA_626_GD.cityNorm)list.push({label:"Апетит 626",value:"норма для GD"});
+    else list.push({label:"Апетит 626",value:"перевір свічки / фільтр"});
+  }
+  const lastOil=sortedEntries().find(item=>item.type==="oil");
+  if(!lastOil&&s.distance>5000)list.push({label:"Масло 626",value:"немає запису"});
+  const parking=entries.filter(item=>item.type==="parking"&&item.date.slice(0,7)===currentMonthKey()).reduce((total,item)=>total+Number(item.amount||0),0);
+  if(parking>0)list.push({label:"Паркування цього місяця",value:`${money(parking)} ₴`});
+  if(s.cityKm>s.highwayKm*2&&s.consumption&&s.consumption>MAZDA_626_GD.mixedNorm)list.push({label:"Місто",value:"короткі поїздки піднімають витрату"});
+  if(!list.length)list.push({label:"626 GD",value:"дані виглядають добре"});
+  return list.slice(0,5);
 }
 
 function renderLog(){
-  const filtered=curFilter==='all'?entries:curFilter==='other2'?entries.filter(e=>!['fuel','service','oil','tires'].includes(e.type)):entries.filter(e=>e.type===curFilter);
-  document.getElementById('log-list').innerHTML=filtered.length?filtered.map(e=>entryHtml(e,true)).join(''):'<div class="empty-r"><i class="ti ti-mood-empty"></i>Записів не знайдено</div>';
+  const list=filter==="all"?sortedEntries():filter==="other"?sortedEntries().filter(item=>!["fuel","trip","service","oil"].includes(item.type)):sortedEntries().filter(item=>item.type===filter);
+  document.getElementById("log-list").innerHTML=list.length?list.map(item=>entryHtml(item,true)).join(""):`<div class="empty"><i class="ti ti-search"></i>Записи не знайдено</div>`;
 }
 
 function renderAnal(){
-  const totalAll=entries.reduce((s,e)=>s+e.amount,0);
-  const fuelE=entries.filter(e=>e.type==='fuel');
-  const totalLit=fuelE.reduce((s,e)=>s+(e.liters||0),0);
-  const odos=entries.filter(e=>e.odo).sort((a,b)=>new Date(a.date)-new Date(b.date));
-  const totalKm=odos.length>=2?odos[odos.length-1].odo-odos[0].odo:0;
-  const lPer100=totalKm>0&&totalLit>0?(totalLit/totalKm)*100:null;
-  const costKm=totalKm>0?totalAll/totalKm:null;
-  const avgFuel=fuelE.length>0?fuelE.reduce((s,e)=>s+e.amount,0)/fuelE.length:null;
-
-  document.getElementById('anal-gauges').innerHTML=`
-    <div class="gauge gauge-green"><div class="gauge-label">ПРОБІГ</div><div class="gauge-val">${totalKm>0?fmt(totalKm):'—'}</div><div class="gauge-unit">КМ ВСЬОГО</div></div>
-    <div class="gauge gauge-accent"><div class="gauge-label">ВИТРАТА</div><div class="gauge-val">${lPer100?lPer100.toFixed(1):'—'}</div><div class="gauge-unit">Л/100 КМ</div></div>
-    <div class="gauge gauge-green"><div class="gauge-label">ЦІНА/КМ</div><div class="gauge-val">${costKm?costKm.toFixed(1):'—'}</div><div class="gauge-unit">ГРИВЕНЬ</div></div>
-    <div class="gauge gauge-accent"><div class="gauge-label">СЕР.ЗАПРАВКА</div><div class="gauge-val" style="font-size:15px;">${avgFuel?fmt(avgFuel):'—'}</div><div class="gauge-unit">ГРИВЕНЬ</div></div>
-  `;
-
-  const fuelAnal=document.getElementById('anal-fuel');
-  if(fuelE.length>0){
-    const prices=fuelE.filter(e=>e.liters>0).map(e=>e.amount/e.liters);
-    const avgP=prices.length>0?prices.reduce((s,v)=>s+v,0)/prices.length:0;
-    fuelAnal.innerHTML=`
-      <div class="anal-row"><span class="anal-key">Середня ціна за літр</span><span class="anal-val">${avgP>0?avgP.toFixed(2):'—'} ₴</span></div>
-      <div class="anal-row"><span class="anal-key">Мін ціна за літр</span><span class="anal-val">${prices.length>0?Math.min(...prices).toFixed(2):'—'} ₴</span></div>
-      <div class="anal-row"><span class="anal-key">Макс ціна за літр</span><span class="anal-val">${prices.length>0?Math.max(...prices).toFixed(2):'—'} ₴</span></div>
-      <div class="anal-row"><span class="anal-key">Всього залито</span><span class="anal-val">${totalLit.toFixed(1)} л</span></div>
-      <div class="anal-row"><span class="anal-key">Кількість заправок</span><span class="anal-val">${fuelE.length}</span></div>
-    `;
-  }else{fuelAnal.innerHTML='<div class="empty-r">Немає даних про заправку</div>';}
-
-  const monthData={};
-  entries.forEach(e=>{const k=e.date.slice(0,7);monthData[k]=(monthData[k]||0)+e.amount;});
-  const months=Object.keys(monthData).sort().slice(-6);
-  const mLabels=months.map(m=>{const[y,mo]=m.split('-');return mo+'.'+y.slice(2);});
-  const mVals=months.map(m=>Math.round(monthData[m]));
-  if(monthInst){monthInst.destroy();monthInst=null;}
-  if(months.length>0){
-    monthInst=new Chart(document.getElementById('monthChart'),{
-      type:'bar',
-      data:{labels:mLabels,datasets:[{label:'₴',data:mVals,backgroundColor:'#D4860A',borderWidth:0}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-        scales:{x:{ticks:{color:'#C8A96E',font:{size:10},autoSkip:false,maxRotation:0},grid:{color:'rgba(58,42,18,0.8)'}},
-                y:{ticks:{color:'#C8A96E',font:{size:10},callback:v=>fmt(v)},grid:{color:'rgba(58,42,18,0.8)'}}}}
-    });
-  }
-
-  const totByType={};entries.forEach(e=>{totByType[e.type]=(totByType[e.type]||0)+e.amount;});
-  const types=Object.keys(totByType);
-  const pieColors=types.map(t=>(TM[t]||TM.other).color);
-  const pieLabels=types.map(t=>(TM[t]||TM.other).label);
-  document.getElementById('pie-legend').innerHTML=types.map((t,i)=>`<span style="display:flex;align-items:center;gap:4px;"><span style="width:9px;height:9px;background:${pieColors[i]};display:inline-block;"></span>${pieLabels[i]} ${totalAll>0?Math.round(totByType[t]/totalAll*100):0}%</span>`).join('');
-  if(pieInst){pieInst.destroy();pieInst=null;}
-  if(types.length>0){
-    pieInst=new Chart(document.getElementById('pieChart'),{
-      type:'doughnut',
-      data:{labels:pieLabels,datasets:[{data:types.map(t=>totByType[t]),backgroundColor:pieColors,borderWidth:1,borderColor:'#1A1208'}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}
-    });
-  }
-
-  const insights=[];
-  if(lPer100){
-    if(lPer100<8)insights.push({ok:true,icon:'ti-check',txt:'Витрата пального в нормі для 626 GD'});
-    else if(lPer100<11)insights.push({ok:false,icon:'ti-alert-triangle',txt:'Підвищена витрата. Перевір повітряний фільтр та свічки'});
-    else insights.push({ok:false,icon:'ti-alert-circle',txt:'Висока витрата! Можливі проблеми з карбюратором'});
-  }
-  if(entries.filter(e=>e.type==='service').length===0&&entries.length>5)insights.push({ok:false,icon:'ti-tool',txt:'Записів про ТО немає — час на обслуговування?'});
-  if(entries.filter(e=>e.type==='oil').length===0&&totalKm>5000)insights.push({ok:false,icon:'ti-droplet',txt:'Заміна масла не зафіксована'});
-  if(insights.length===0)insights.push({ok:true,icon:'ti-info-circle',txt:'Додайте більше даних для діагностики'});
-  document.getElementById('anal-insights').innerHTML=insights.map(i=>`<div class="anal-row"><span style="color:${i.ok?'#2ECC71':'#C0392B'};margin-right:8px;font-size:15px;"><i class="ti ${i.icon}"></i></span><span class="anal-key">${i.txt}</span></div>`).join('');
-  document.getElementById('anal-scan').textContent=`SYS: АНАЛІЗ ЗАВЕРШЕНО · ЗАПИСІВ: ${entries.length} · ПРОБІГ: ${totalKm>0?fmt(totalKm)+' КМ':'—'}`;
+  const s=stats();
+  document.getElementById("anal-metrics").innerHTML=[
+    metric("ti-route","Пробіг",s.distance>0?num(s.distance,1):"—","км загалом","#127078"),
+    metric("ti-gas-station","Паливо",s.totalLiters>0?num(s.totalLiters,1):"—","л залито","#f0a92e"),
+    metric("ti-chart-arrows","Витрата",s.consumption?num(s.consumption,1):"—","л/100 км","#d94b3d"),
+    metric("ti-wallet","Ціна/км",s.costKm?num(s.costKm,2):"—","грн","#16875a")
+  ].join("");
+  const prices=s.fuel.filter(item=>item.liters>0&&item.amount>0).map(item=>item.amount/item.liters);
+  document.getElementById("fuel-analytics").innerHTML=s.fuel.length?[
+    row("Кількість заправок",s.fuel.length),
+    row("Усього залито",`${num(s.totalLiters,1)} л`),
+    row("Середня ціна",prices.length?`${num(prices.reduce((a,b)=>a+b,0)/prices.length,2)} ₴/л`:"—"),
+    row("Найдешевше паливо",prices.length?`${num(Math.min(...prices),2)} ₴/л`:"—"),
+    row("Типи палива",Array.from(new Set(s.fuel.map(item=>item.fuelType).filter(Boolean))).join(", ")||"—")
+  ].join(""):`<div class="empty">Додай заправку для паливної аналітики</div>`;
+  document.getElementById("drive-analytics").innerHTML=[
+    row("Поїздок",s.trips.length),
+    row("Середня дистанція",s.trips.length?`${num(s.tripKm/s.trips.length,1)} км`:"—"),
+    row("Середній час",s.trips.length?`${num(s.tripMinutes/s.trips.length,0)} хв`:"—"),
+    row("Середня швидкість",s.avgSpeed?`${num(s.avgSpeed,1)} км/год`:"—"),
+    row("Витрата з поїздок",s.tripKm>0&&s.tripLiters>0?`${num((s.tripLiters/s.tripKm)*100,1)} л/100 км`:"—"),
+    row("Місто / траса",`${num(s.cityKm,0)} / ${num(s.highwayKm,0)} км`)
+  ].join("");
+  renderCharts();
 }
 
-function showToast(msg){
-  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2200);
+function renderCharts(){
+  const monthTotals={};
+  entries.filter(item=>item.type!=="trip").forEach(item=>{
+    const key=item.date.slice(0,7);
+    monthTotals[key]=(monthTotals[key]||0)+Number(item.amount||0);
+  });
+  const months=Object.keys(monthTotals).sort().slice(-8);
+  if(typeof Chart==="undefined"){
+    const monthWrap=document.getElementById("month-chart")?.parentElement;
+    const typeWrap=document.getElementById("type-chart")?.parentElement;
+    if(monthWrap)monthWrap.innerHTML=months.length?months.map(month=>`<div class="bar-line"><strong>${month.slice(5)}.${month.slice(2,4)}</strong><div class="bar-track"><div class="bar-fill" style="width:${Math.max(5,monthTotals[month]/Math.max(...Object.values(monthTotals),1)*100)}%;background:#16875a"></div></div><span>${money(monthTotals[month])} ₴</span></div>`).join(""):`<div class="empty">Немає даних для графіка</div>`;
+    const typeTotalsFallback={};
+    entries.filter(item=>item.type!=="trip").forEach(item=>typeTotalsFallback[item.type]=(typeTotalsFallback[item.type]||0)+Number(item.amount||0));
+    const maxFallback=Math.max(...Object.values(typeTotalsFallback),1);
+    if(typeWrap)typeWrap.innerHTML=Object.keys(typeTotalsFallback).map(type=>`<div class="bar-line"><strong>${(meta[type]||meta.other).label}</strong><div class="bar-track"><div class="bar-fill" style="width:${Math.max(5,typeTotalsFallback[type]/maxFallback*100)}%;background:${(meta[type]||meta.other).color}"></div></div><span>${money(typeTotalsFallback[type])} ₴</span></div>`).join("")||`<div class="empty">Немає даних для графіка</div>`;
+    return;
+  }
+  if(monthChart)monthChart.destroy();
+  monthChart=new Chart(document.getElementById("month-chart"),{
+    type:"bar",
+    data:{labels:months.map(month=>month.slice(5)+"."+month.slice(2,4)),datasets:[{data:months.map(month=>monthTotals[month]),backgroundColor:"#16875a",borderRadius:6}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{ticks:{callback:value=>money(value)+" ₴"}}}}
+  });
+
+  const typeTotals={};
+  entries.filter(item=>item.type!=="trip").forEach(item=>typeTotals[item.type]=(typeTotals[item.type]||0)+Number(item.amount||0));
+  const types=Object.keys(typeTotals);
+  if(typeChart)typeChart.destroy();
+  typeChart=new Chart(document.getElementById("type-chart"),{
+    type:"doughnut",
+    data:{labels:types.map(type=>(meta[type]||meta.other).label),datasets:[{data:types.map(type=>typeTotals[type]),backgroundColor:types.map(type=>(meta[type]||meta.other).color),borderColor:"#fff",borderWidth:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{boxWidth:12,usePointStyle:true}}},cutout:"62%"}
+  });
 }
 
-document.getElementById('a-date').value=new Date().toISOString().split('T')[0];
-toggleF();renderDash();updateOdo();
+function render(){
+  const s=stats();
+  renderHeader(s);
+  renderDash();
+  renderLog();
+  renderAnal();
+}
+
+document.querySelectorAll(".tab").forEach(tab=>tab.addEventListener("click",()=>showTab(tab.dataset.tab)));
+document.querySelectorAll(".type-btn").forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.mode)));
+document.querySelectorAll(".chip").forEach(btn=>btn.addEventListener("click",()=>{
+  selectedFuel=btn.dataset.fuel;
+  document.querySelectorAll(".chip").forEach(chip=>chip.classList.remove("active"));
+  btn.classList.add("active");
+}));
+document.querySelectorAll(".filter").forEach(btn=>btn.addEventListener("click",()=>{
+  filter=btn.dataset.filter;
+  document.querySelectorAll(".filter").forEach(item=>item.classList.toggle("active",item===btn));
+  renderLog();
+}));
+["liters","price"].forEach(id=>document.getElementById(id).addEventListener("input",calcFuelAmount));
+document.getElementById("fuel-amount").addEventListener("input",()=>{if(document.getElementById("fuel-amount").value){document.getElementById("price").value=""}});
+document.getElementById("date").value=todayKey();
+render();
 </script>
 </body>
 </html>
