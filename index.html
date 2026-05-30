@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mazda 626">
+<title>Mazda 626 GD · Журнал</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Oswald:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --r-red:#C0392B;--r-red-d:#8B1A1A;--r-amber:#D4860A;--r-amber-l:#F5C842;
+  --r-dark:#1A1208;--r-panel:#231A0D;--r-mid:#3A2A12;
+  --r-cream:#F0E8D0;--r-tan:#C8A96E;--r-tan-d:#8B6914;
+  --r-green:#2ECC71;--r-green-d:#1A7A42;
+  --mono:'Share Tech Mono',monospace;--head:'Oswald',sans-serif;
+}
+html,body{height:100%;background:#1A1208;overflow:hidden;}
+.app{display:flex;flex-direction:column;height:100vh;height:100dvh;background:#1A1208;font-family:var(--mono);color:var(--r-cream);}
+
+.header{background:#231A0D;border-bottom:2px solid var(--r-amber);padding:10px 16px 8px;flex-shrink:0;}
+.header-top{display:flex;align-items:center;gap:10px;margin-bottom:3px;}
+.logo-box{background:var(--r-red);color:#fff;font-family:var(--head);font-size:10px;font-weight:500;padding:3px 8px;letter-spacing:2px;}
+.model-name{font-family:var(--head);font-size:20px;font-weight:500;color:var(--r-amber-l);letter-spacing:3px;}
+.header-sub{font-size:10px;color:var(--r-tan);letter-spacing:2px;}
+.odo-strip{background:var(--r-dark);border-top:1px solid var(--r-mid);border-bottom:1px solid var(--r-mid);padding:5px 16px;font-size:12px;color:var(--r-green);letter-spacing:3px;text-align:center;flex-shrink:0;}
+
+.tabs{display:flex;background:#231A0D;border-bottom:2px solid var(--r-mid);flex-shrink:0;}
+.tab{flex:1;padding:8px 4px 6px;font-size:10px;font-family:var(--head);font-weight:400;letter-spacing:1px;text-align:center;color:var(--r-tan);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;}
+.tab i{display:block;font-size:17px;margin-bottom:2px;}
+.tab.active{color:var(--r-amber-l);border-bottom-color:var(--r-amber-l);}
+
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+
+.section{display:none;padding:14px 14px 80px;}
+.section.active{display:block;}
+
+.gauge-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px;}
+.gauge{background:var(--r-panel);border:1px solid var(--r-mid);padding:10px 12px;}
+.gauge-label{font-size:9px;color:var(--r-tan);letter-spacing:2px;margin-bottom:3px;font-family:var(--head);}
+.gauge-val{font-size:20px;color:var(--r-amber-l);font-family:var(--mono);}
+.gauge-unit{font-size:10px;color:var(--r-tan);margin-top:1px;}
+.gauge-accent{border-left:3px solid var(--r-red);}
+.gauge-green{border-left:3px solid var(--r-green);}
+
+.panel{background:var(--r-panel);border:1px solid var(--r-mid);padding:12px 14px;margin-bottom:10px;}
+.panel-title{font-family:var(--head);font-size:12px;letter-spacing:2px;color:var(--r-amber);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--r-mid);display:flex;align-items:center;gap:7px;}
+.panel-title i{font-size:15px;}
+
+.entry-row{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--r-mid);}
+.entry-row:last-child{border-bottom:none;}
+.entry-dot{width:8px;height:8px;flex-shrink:0;}
+.entry-info{flex:1;min-width:0;}
+.entry-name{font-size:12px;color:var(--r-cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.entry-meta{font-size:10px;color:var(--r-tan);}
+.entry-amt{font-size:13px;color:var(--r-amber-l);text-align:right;white-space:nowrap;}
+.entry-del{font-size:15px;color:var(--r-tan-d);cursor:pointer;padding:6px 4px;background:none;border:none;flex-shrink:0;}
+
+.form-row{margin-bottom:9px;}
+.form-row label{display:block;font-size:10px;color:var(--r-tan);letter-spacing:1px;margin-bottom:4px;font-family:var(--head);}
+.form-row input,.form-row select{width:100%;padding:9px 10px;font-size:14px;background:var(--r-dark);color:var(--r-cream);border:1px solid var(--r-mid);font-family:var(--mono);border-radius:0;-webkit-appearance:none;appearance:none;}
+.form-row input:focus,.form-row select:focus{outline:none;border-color:var(--r-amber);}
+.form-row select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23C8A96E' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;}
+.form-row select option{background:#231A0D;}
+.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+
+.btn-retro{width:100%;padding:11px;font-family:var(--head);font-size:13px;letter-spacing:3px;cursor:pointer;margin-top:6px;border-radius:0;}
+.btn-save{background:var(--r-red);color:#fff;border:none;}
+.btn-save:active{background:var(--r-red-d);}
+
+.filter-strip{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+.filter-strip::-webkit-scrollbar{display:none;}
+.fbtn{flex-shrink:0;padding:5px 12px;font-size:10px;font-family:var(--head);letter-spacing:1px;cursor:pointer;border:1px solid var(--r-mid);background:transparent;color:var(--r-tan);border-radius:0;}
+.fbtn.active{background:var(--r-amber);color:var(--r-dark);border-color:var(--r-amber);}
+
+.bar-wrap{margin-bottom:7px;}
+.bar-label{display:flex;justify-content:space-between;font-size:10px;color:var(--r-tan);margin-bottom:3px;}
+.bar-track{height:5px;background:var(--r-mid);}
+.bar-fill{height:100%;}
+
+.toast-r{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--r-amber);color:var(--r-dark);padding:7px 18px;font-family:var(--head);font-size:12px;letter-spacing:2px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:99;white-space:nowrap;}
+.toast-r.show{opacity:1;}
+
+.empty-r{text-align:center;padding:28px 0;color:var(--r-tan);font-size:12px;}
+.empty-r i{font-size:32px;display:block;margin-bottom:8px;color:var(--r-mid);}
+
+.anal-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--r-mid);}
+.anal-row:last-child{border-bottom:none;}
+.anal-key{font-size:11px;color:var(--r-tan);}
+.anal-val{font-size:13px;color:var(--r-amber-l);}
+.scanline{font-size:10px;color:var(--r-green);letter-spacing:1px;padding:4px 0;border-top:1px solid var(--r-mid);margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-top">
+      <div class="logo-box">MAZDA</div>
+      <div class="model-name">626 GD</div>
+    </div>
+    <div class="header-sub">БОРТОВИЙ ЖУРНАЛ ВИТРАТ · СЕРІЯ 1989</div>
+  </div>
+  <div class="odo-strip" id="odo-display">ОДОМЕТР: — КМ</div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('dash')"><i class="ti ti-layout-dashboard"></i>ПАНЕЛЬ</button>
+    <button class="tab" onclick="showTab('add')"><i class="ti ti-plus"></i>ЗАПИС</button>
+    <button class="tab" onclick="showTab('log')"><i class="ti ti-list"></i>ЖУРНАЛ</button>
+    <button class="tab" onclick="showTab('anal')"><i class="ti ti-chart-bar"></i>АНАЛІЗ</button>
+  </div>
+  <div class="content">
+
+    <!-- ПАНЕЛЬ -->
+    <div class="section active" id="tab-dash">
+      <div class="gauge-row" id="gauges"></div>
+      <div class="panel">
+        <div class="panel-title"><i class="ti ti-clock"></i>ОСТАННІ ОПЕРАЦІЇ</div>
+        <div id="dash-recent"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><i class="ti ti-road"></i>ВИТРАТИ ЗА КАТЕГОРІЄЮ</div>
+        <div id="dash-bars"></div>
+      </div>
+    </div>
+
+    <!-- ЗАПИС -->
+    <div class="section" id="tab-add">
+      <div class="panel">
+        <div class="panel-title"><i class="ti ti-file-plus"></i>НОВА ОПЕРАЦІЯ</div>
+        <div class="form-row">
+          <label>КАТЕГОРІЯ</label>
+          <select id="a-type" onchange="toggleF()">
+            <option value="fuel">ЗАПРАВКА</option>
+            <option value="service">СТО / РЕМОНТ</option>
+            <option value="oil">МАСЛО / ФІЛЬТРИ</option>
+            <option value="tires">ШИНИ / ГУМА</option>
+            <option value="wash">МИЙКА</option>
+            <option value="parking">ПАРКОВКА</option>
+            <option value="insurance">СТРАХОВКА</option>
+            <option value="fine">ШТРАФ</option>
+            <option value="other">ІНШЕ</option>
+          </select>
+        </div>
+        <div class="form-row"><label>ДАТА</label><input type="date" id="a-date"></div>
+        <div class="form-row"><label>ОДОМЕТР (КМ)</label><input type="number" id="a-odo" placeholder="125400"></div>
+        <div id="fuel-f">
+          <div class="form-2col">
+            <div class="form-row"><label>ЛІТРИ</label><input type="number" id="a-lit" placeholder="35" step="0.1" oninput="calcF()"></div>
+            <div class="form-row"><label>₴ / ЛІТ</label><input type="number" id="a-ppl" placeholder="56" step="0.01" oninput="calcF()"></div>
+          </div>
+          <div class="form-row"><label>СУМА ₴ (або авто)</label><input type="number" id="a-fuel-sum" placeholder="1960" oninput="clrF()"></div>
+          <div class="form-row"><label>АЗС / ПРИМІТКА</label><input type="text" id="a-note" placeholder="WOG, повний бак"></div>
+        </div>
+        <div id="other-f" style="display:none">
+          <div class="form-row"><label>СУМА ₴</label><input type="number" id="a-sum" placeholder="0" step="0.01"></div>
+          <div class="form-row"><label>ДЕТАЛІ / ПРИМІТКА</label><input type="text" id="a-detail" placeholder="Shell 10W-40, свічки NGK..."></div>
+        </div>
+        <button class="btn-retro btn-save" onclick="addE()">// ЗБЕРЕГТИ //</button>
+      </div>
+    </div>
+
+    <!-- ЖУРНАЛ -->
+    <div class="section" id="tab-log">
+      <div class="filter-strip" id="log-filters">
+        <button class="fbtn active" onclick="setF('all',this)">УСІ</button>
+        <button class="fbtn" onclick="setF('fuel',this)">ПАЛИВО</button>
+        <button class="fbtn" onclick="setF('service',this)">СТО</button>
+        <button class="fbtn" onclick="setF('oil',this)">МАСЛО</button>
+        <button class="fbtn" onclick="setF('tires',this)">ШИНИ</button>
+        <button class="fbtn" onclick="setF('other2',this)">ІНШЕ</button>
+      </div>
+      <div class="panel" style="padding:10px 14px;">
+        <div id="log-list"></div>
+      </div>
+    </div>
+
+    <!-- АНАЛІЗ -->
+    <div class="section" id="tab-anal">
+      <div class="gauge-row" id="anal-gauges"></div>
+      <div class="panel">
+        <div class="panel-title"><i class="ti ti-gas-station"></i>ПАЛИВНА АНАЛІТИКА</div>
+        <div id="anal-fuel"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><i class="ti ti-chart-line"></i>ВИТРАТИ ПО МІСЯЦЯХ</div>
+        <div style="position:relative;width:100%;height:180px;"><canvas id="monthChart" role="img" aria-label="Витрати по місяцях">Дані відсутні</canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><i class="ti ti-chart-pie"></i>СТРУКТУРА ВИТРАТ</div>
+        <div id="pie-legend" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;font-size:10px;color:#C8A96E;"></div>
+        <div style="position:relative;width:100%;height:180px;"><canvas id="pieChart" role="img" aria-label="Розподіл витрат">Дані відсутні</canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><i class="ti ti-bulb"></i>ДІАГНОСТИКА</div>
+        <div id="anal-insights"></div>
+      </div>
+      <div class="scanline" id="anal-scan">SYS: ГОТОВИЙ ДО АНАЛІЗУ</div>
+    </div>
+
+  </div>
+</div>
+<div class="toast-r" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+let entries=[];
+try{entries=JSON.parse(localStorage.getItem('mz626_app')||'[]');}catch(e){}
+let curFilter='all';
+let pieInst=null,monthInst=null;
+
+const TM={
+  fuel:{label:'Заправка',color:'#D4860A'},
+  service:{label:'СТО',color:'#C0392B'},
+  oil:{label:'Масло',color:'#854F0B'},
+  tires:{label:'Шини',color:'#5F5E5A'},
+  wash:{label:'Мийка',color:'#0F6E56'},
+  parking:{label:'Парковка',color:'#3B6D11'},
+  insurance:{label:'Страховка',color:'#533AB7'},
+  fine:{label:'Штраф',color:'#8B1A1A'},
+  other:{label:'Інше',color:'#444441'},
+};
+
+function save(){try{localStorage.setItem('mz626_app',JSON.stringify(entries));}catch(e){}}
+
+function showTab(n){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.add('active');
+  ['dash','add','log','anal'].forEach((t,i)=>{if(t===n)document.querySelectorAll('.tab')[i].classList.add('active');});
+  if(n==='dash')renderDash();
+  if(n==='log')renderLog();
+  if(n==='anal')renderAnal();
+  updateOdo();
+}
+
+function updateOdo(){
+  const odos=entries.filter(e=>e.odo).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  document.getElementById('odo-display').textContent=odos.length?'ОДОМЕТР: '+fmt(odos[0].odo)+' КМ':'ОДОМЕТР: — КМ';
+}
+
+function toggleF(){
+  const t=document.getElementById('a-type').value;
+  document.getElementById('fuel-f').style.display=t==='fuel'?'':'none';
+  document.getElementById('other-f').style.display=t!=='fuel'?'':'none';
+}
+
+function calcF(){
+  const l=parseFloat(document.getElementById('a-lit').value)||0;
+  const p=parseFloat(document.getElementById('a-ppl').value)||0;
+  if(l>0&&p>0)document.getElementById('a-fuel-sum').value=(l*p).toFixed(2);
+}
+function clrF(){document.getElementById('a-lit').value='';document.getElementById('a-ppl').value='';}
+
+function addE(){
+  const type=document.getElementById('a-type').value;
+  const dateV=document.getElementById('a-date').value;
+  const odo=parseFloat(document.getElementById('a-odo').value)||null;
+  let amount=0,liters=0,note='';
+  if(type==='fuel'){
+    amount=parseFloat(document.getElementById('a-fuel-sum').value)||0;
+    liters=parseFloat(document.getElementById('a-lit').value)||0;
+    note=document.getElementById('a-note').value.trim();
+  }else{
+    amount=parseFloat(document.getElementById('a-sum').value)||0;
+    note=document.getElementById('a-detail').value.trim();
+  }
+  if(!dateV||amount<=0){showToast('ПОМИЛКА: ВКАЖІТЬ ДАТУ ТА СУМУ');return;}
+  entries.unshift({id:Date.now(),type,date:dateV,odo,amount,liters,note});
+  save();
+  showToast('ЗАПИС ЗБЕРЕЖЕНО //');
+  ['a-date','a-odo','a-fuel-sum','a-lit','a-ppl','a-note','a-sum','a-detail'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('a-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('a-type').value='fuel';
+  toggleF();
+  updateOdo();
+}
+
+function delE(id){
+  if(!confirm('Видалити запис?'))return;
+  entries=entries.filter(e=>e.id!==id);
+  save();renderLog();renderDash();updateOdo();
+}
+
+function setF(f,btn){
+  curFilter=f;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLog();
+}
+
+function fmt(n){return Math.round(n).toLocaleString('uk-UA');}
+function fmtDate(d){return new Date(d).toLocaleDateString('uk-UA',{day:'2-digit',month:'2-digit',year:'2-digit'});}
+
+function entryHtml(e,del){
+  const m=TM[e.type]||TM.other;
+  return `<div class="entry-row">
+    <div class="entry-dot" style="background:${m.color};"></div>
+    <div class="entry-info">
+      <div class="entry-name">${m.label}${e.note?' · '+e.note:''}</div>
+      <div class="entry-meta">${fmtDate(e.date)}${e.odo?' · '+fmt(e.odo)+' км':''}${e.liters?' · '+e.liters+' л':''}</div>
+    </div>
+    <div style="text-align:right;flex-shrink:0;">
+      <div class="entry-amt">${fmt(e.amount)} ₴</div>
+      ${del?`<button class="entry-del" onclick="delE(${e.id})" aria-label="Видалити"><i class="ti ti-trash"></i></button>`:''}
+    </div>
+  </div>`;
+}
+
+function renderDash(){
+  const now=new Date();
+  const thisM=entries.filter(e=>{const d=new Date(e.date);return d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth();});
+  const totalM=thisM.reduce((s,e)=>s+e.amount,0);
+  const fuelM=thisM.filter(e=>e.type==='fuel').reduce((s,e)=>s+e.amount,0);
+  const litM=thisM.filter(e=>e.type==='fuel').reduce((s,e)=>s+(e.liters||0),0);
+  const totalAll=entries.reduce((s,e)=>s+e.amount,0);
+  const lastFuel=entries.find(e=>e.type==='fuel');
+  document.getElementById('gauges').innerHTML=`
+    <div class="gauge gauge-accent"><div class="gauge-label">МІСЯЦЬ</div><div class="gauge-val">${fmt(totalM)}</div><div class="gauge-unit">ГРИВЕНЬ</div></div>
+    <div class="gauge gauge-green"><div class="gauge-label">ПАЛИВО/МІС</div><div class="gauge-val">${fmt(fuelM)}</div><div class="gauge-unit">${litM>0?litM.toFixed(1)+' Л':'—'}</div></div>
+    <div class="gauge gauge-accent"><div class="gauge-label">ВСЬОГО</div><div class="gauge-val">${fmt(totalAll)}</div><div class="gauge-unit">${entries.length} ЗАПИСІВ</div></div>
+    <div class="gauge gauge-green"><div class="gauge-label">ОСТАННЯ ЗАП.</div><div class="gauge-val" style="font-size:15px;">${lastFuel?fmt(lastFuel.amount)+' ₴':'—'}</div><div class="gauge-unit">${lastFuel?fmtDate(lastFuel.date):''}</div></div>
+  `;
+  const recent=entries.slice(0,5);
+  document.getElementById('dash-recent').innerHTML=recent.length?recent.map(e=>entryHtml(e,false)).join(''):'<div class="empty-r"><i class="ti ti-mood-empty"></i>Записів немає</div>';
+  const totByType={};entries.forEach(e=>{totByType[e.type]=(totByType[e.type]||0)+e.amount;});
+  const maxVal=Math.max(...Object.values(totByType),1);
+  document.getElementById('dash-bars').innerHTML=Object.entries(totByType).sort((a,b)=>b[1]-a[1]).map(([t,v])=>{
+    const m=TM[t]||TM.other;
+    return `<div class="bar-wrap"><div class="bar-label"><span>${m.label}</span><span style="color:#F5C842;">${fmt(v)} ₴</span></div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/maxVal*100)}%;background:${m.color};"></div></div></div>`;
+  }).join('')||'<div class="empty-r">Немає даних</div>';
+}
+
+function renderLog(){
+  const filtered=curFilter==='all'?entries:curFilter==='other2'?entries.filter(e=>!['fuel','service','oil','tires'].includes(e.type)):entries.filter(e=>e.type===curFilter);
+  document.getElementById('log-list').innerHTML=filtered.length?filtered.map(e=>entryHtml(e,true)).join(''):'<div class="empty-r"><i class="ti ti-mood-empty"></i>Записів не знайдено</div>';
+}
+
+function renderAnal(){
+  const totalAll=entries.reduce((s,e)=>s+e.amount,0);
+  const fuelE=entries.filter(e=>e.type==='fuel');
+  const totalLit=fuelE.reduce((s,e)=>s+(e.liters||0),0);
+  const odos=entries.filter(e=>e.odo).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const totalKm=odos.length>=2?odos[odos.length-1].odo-odos[0].odo:0;
+  const lPer100=totalKm>0&&totalLit>0?(totalLit/totalKm)*100:null;
+  const costKm=totalKm>0?totalAll/totalKm:null;
+  const avgFuel=fuelE.length>0?fuelE.reduce((s,e)=>s+e.amount,0)/fuelE.length:null;
+
+  document.getElementById('anal-gauges').innerHTML=`
+    <div class="gauge gauge-green"><div class="gauge-label">ПРОБІГ</div><div class="gauge-val">${totalKm>0?fmt(totalKm):'—'}</div><div class="gauge-unit">КМ ВСЬОГО</div></div>
+    <div class="gauge gauge-accent"><div class="gauge-label">ВИТРАТА</div><div class="gauge-val">${lPer100?lPer100.toFixed(1):'—'}</div><div class="gauge-unit">Л/100 КМ</div></div>
+    <div class="gauge gauge-green"><div class="gauge-label">ЦІНА/КМ</div><div class="gauge-val">${costKm?costKm.toFixed(1):'—'}</div><div class="gauge-unit">ГРИВЕНЬ</div></div>
+    <div class="gauge gauge-accent"><div class="gauge-label">СЕР.ЗАПРАВКА</div><div class="gauge-val" style="font-size:15px;">${avgFuel?fmt(avgFuel):'—'}</div><div class="gauge-unit">ГРИВЕНЬ</div></div>
+  `;
+
+  const fuelAnal=document.getElementById('anal-fuel');
+  if(fuelE.length>0){
+    const prices=fuelE.filter(e=>e.liters>0).map(e=>e.amount/e.liters);
+    const avgP=prices.length>0?prices.reduce((s,v)=>s+v,0)/prices.length:0;
+    fuelAnal.innerHTML=`
+      <div class="anal-row"><span class="anal-key">Середня ціна за літр</span><span class="anal-val">${avgP>0?avgP.toFixed(2):'—'} ₴</span></div>
+      <div class="anal-row"><span class="anal-key">Мін ціна за літр</span><span class="anal-val">${prices.length>0?Math.min(...prices).toFixed(2):'—'} ₴</span></div>
+      <div class="anal-row"><span class="anal-key">Макс ціна за літр</span><span class="anal-val">${prices.length>0?Math.max(...prices).toFixed(2):'—'} ₴</span></div>
+      <div class="anal-row"><span class="anal-key">Всього залито</span><span class="anal-val">${totalLit.toFixed(1)} л</span></div>
+      <div class="anal-row"><span class="anal-key">Кількість заправок</span><span class="anal-val">${fuelE.length}</span></div>
+    `;
+  }else{fuelAnal.innerHTML='<div class="empty-r">Немає даних про заправку</div>';}
+
+  const monthData={};
+  entries.forEach(e=>{const k=e.date.slice(0,7);monthData[k]=(monthData[k]||0)+e.amount;});
+  const months=Object.keys(monthData).sort().slice(-6);
+  const mLabels=months.map(m=>{const[y,mo]=m.split('-');return mo+'.'+y.slice(2);});
+  const mVals=months.map(m=>Math.round(monthData[m]));
+  if(monthInst){monthInst.destroy();monthInst=null;}
+  if(months.length>0){
+    monthInst=new Chart(document.getElementById('monthChart'),{
+      type:'bar',
+      data:{labels:mLabels,datasets:[{label:'₴',data:mVals,backgroundColor:'#D4860A',borderWidth:0}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+        scales:{x:{ticks:{color:'#C8A96E',font:{size:10},autoSkip:false,maxRotation:0},grid:{color:'rgba(58,42,18,0.8)'}},
+                y:{ticks:{color:'#C8A96E',font:{size:10},callback:v=>fmt(v)},grid:{color:'rgba(58,42,18,0.8)'}}}}
+    });
+  }
+
+  const totByType={};entries.forEach(e=>{totByType[e.type]=(totByType[e.type]||0)+e.amount;});
+  const types=Object.keys(totByType);
+  const pieColors=types.map(t=>(TM[t]||TM.other).color);
+  const pieLabels=types.map(t=>(TM[t]||TM.other).label);
+  document.getElementById('pie-legend').innerHTML=types.map((t,i)=>`<span style="display:flex;align-items:center;gap:4px;"><span style="width:9px;height:9px;background:${pieColors[i]};display:inline-block;"></span>${pieLabels[i]} ${totalAll>0?Math.round(totByType[t]/totalAll*100):0}%</span>`).join('');
+  if(pieInst){pieInst.destroy();pieInst=null;}
+  if(types.length>0){
+    pieInst=new Chart(document.getElementById('pieChart'),{
+      type:'doughnut',
+      data:{labels:pieLabels,datasets:[{data:types.map(t=>totByType[t]),backgroundColor:pieColors,borderWidth:1,borderColor:'#1A1208'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}
+    });
+  }
+
+  const insights=[];
+  if(lPer100){
+    if(lPer100<8)insights.push({ok:true,icon:'ti-check',txt:'Витрата пального в нормі для 626 GD'});
+    else if(lPer100<11)insights.push({ok:false,icon:'ti-alert-triangle',txt:'Підвищена витрата. Перевір повітряний фільтр та свічки'});
+    else insights.push({ok:false,icon:'ti-alert-circle',txt:'Висока витрата! Можливі проблеми з карбюратором'});
+  }
+  if(entries.filter(e=>e.type==='service').length===0&&entries.length>5)insights.push({ok:false,icon:'ti-tool',txt:'Записів про ТО немає — час на обслуговування?'});
+  if(entries.filter(e=>e.type==='oil').length===0&&totalKm>5000)insights.push({ok:false,icon:'ti-droplet',txt:'Заміна масла не зафіксована'});
+  if(insights.length===0)insights.push({ok:true,icon:'ti-info-circle',txt:'Додайте більше даних для діагностики'});
+  document.getElementById('anal-insights').innerHTML=insights.map(i=>`<div class="anal-row"><span style="color:${i.ok?'#2ECC71':'#C0392B'};margin-right:8px;font-size:15px;"><i class="ti ${i.icon}"></i></span><span class="anal-key">${i.txt}</span></div>`).join('');
+  document.getElementById('anal-scan').textContent=`SYS: АНАЛІЗ ЗАВЕРШЕНО · ЗАПИСІВ: ${entries.length} · ПРОБІГ: ${totalKm>0?fmt(totalKm)+' КМ':'—'}`;
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+document.getElementById('a-date').value=new Date().toISOString().split('T')[0];
+toggleF();renderDash();updateOdo();
+</script>
+</body>
+</html>
