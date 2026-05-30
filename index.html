@@ -146,6 +146,15 @@ html,body{height:100%;background:#1A1208;overflow:hidden;}
         <div class="form-row"><label>ДАТА</label><input type="date" id="a-date"></div>
         <div class="form-row"><label>ОДОМЕТР (КМ)</label><input type="number" id="a-odo" placeholder="125400"></div>
         <div id="fuel-f">
+          <div class="form-row">
+            <label>ТИП ПАЛИВА</label>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;" id="fuel-type-btns">
+              <button type="button" class="ftype-btn active" data-ft="А-95" onclick="selFT(this)">А-95</button>
+              <button type="button" class="ftype-btn" data-ft="А-92" onclick="selFT(this)">А-92</button>
+              <button type="button" class="ftype-btn" data-ft="ГАЗ" onclick="selFT(this)">ГАЗ</button>
+              <button type="button" class="ftype-btn" data-ft="ДП" onclick="selFT(this)">ДП</button>
+            </div>
+          </div>
           <div class="form-2col">
             <div class="form-row"><label>ЛІТРИ</label><input type="number" id="a-lit" placeholder="35" step="0.1" oninput="calcF()"></div>
             <div class="form-row"><label>₴ / ЛІТ</label><input type="number" id="a-ppl" placeholder="56" step="0.01" oninput="calcF()"></div>
